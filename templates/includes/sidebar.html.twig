@@ -15,7 +15,7 @@
 
 {# Mock user data (to be replaced with Drupal variables) #}
 {% set user_name = current_user_name|default('Ana Silva') %}
-{% set user_avatar = current_user_avatar|default('https://picsum.photos/id/64/100/100') %}
+{% set user_avatar = current_user_avatar|default(file_url('themes/intranet_megamidia/css/assets/user.png')) %}
 {% set user_role = current_user_role|default('Analista de Marketing') %}
 
 <aside class="js-sidebar sidebar fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0">
@@ -89,9 +89,9 @@
         {# User Name #}
         <div class="flex-1 min-w-0">
           {% if logged_in %}
-    <a href="{{ path('user.page') }}" class="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
-      <span class="font-medium">{{ user_name }}</span>
-    </a>
+          <a href="{{ path('entity.user.edit_form', {'user': current_user_id}) }}" class="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+            <span class="font-medium">{{ current_user_full_name }}</span>
+          </a>
     {% endif %}
           {# User Role #}
           <p class="sidebar__user-role text-xs text-gray-500 truncate">

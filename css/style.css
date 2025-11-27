@@ -44,7 +44,7 @@ body.toolbar-fixed {
 #toolbar-administration {
     display: none !important;
 }
-
+/*
 div[role="alert"] {
     padding: 15px 20px;
     border-radius: 15px;
@@ -60,7 +60,7 @@ div[role="alert"] a {
     font-weight: bold;
     text-decoration: underline;
     color: #fff;
-}
+}*/
 
 /* ==========================================================================
    LAYOUT
@@ -99,6 +99,181 @@ div[role="alert"] a {
     max-width: 80rem;
     margin: 0 auto;
 }
+
+
+/* ==========================================================================
+   FORMULÁRIOS
+   ========================================================================== */
+
+   form .form-item {
+    margin-bottom: 0;
+}
+
+form .form-item label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+form .form-item input[type="text"],
+form .form-item input[type="password"],
+form .form-item input[type="email"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    color: #111827;
+    background-color: #ffffff;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+
+form .form-item input[type="text"]:focus,
+form .form-item input[type="password"]:focus,
+form .form-item input[type="email"]:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+form .form-item input[type="text"]::placeholder,
+form .form-item input[type="password"]::placeholder,
+form .form-item input[type="email"]::placeholder {
+    color: #9ca3af;
+}
+
+form .form-item .description {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
+
+form .form-actions {
+    margin-top: 0.5rem;
+}
+
+form .form-submit,
+form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background-color: #0284c7;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 150ms;
+}
+
+form .form-submit:hover,
+form button[type="submit"]:hover {
+    background-color: #0369a1;
+}
+
+form .form-submit:focus,
+form button[type="submit"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+}
+
+/* Password strength indicator */
+form .password-strength {
+    margin-top: 0.5rem;
+}
+
+form .password-strength__meter {
+    height: 0.25rem;
+    border-radius: 9999px;
+    background-color: #e5e7eb;
+    overflow: hidden;
+}
+
+form .password-strength__indicator {
+    height: 100%;
+    transition: width 300ms, background-color 300ms;
+}
+
+form .password-strength__text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+/* Password confirm match */
+form .password-confirm {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+form .password-confirm.ok {
+    color: #059669;
+}
+
+form .password-confirm.error {
+    color: #dc2626;
+}
+
+/* Checkbox styling */
+form .form-item-persistent-login {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+form .form-item-persistent-login input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 2px solid #e5e7eb;
+    accent-color: #0284c7;
+}
+
+form .form-item-persistent-login label {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+/* Messages on auth pages */
+[data-drupal-messages] {    
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+[data-drupal-messages] a{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+[data-drupal-messages] [role="error"] {
+    padding: 15px 20px;
+    border-radius: 15px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+[data-drupal-messages] [role="status"] {
+    padding: 15px 20px;
+    border-radius: 15px;
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #059669;
+}
+
+[data-drupal-messages] [role="alert"] {
+    padding: 15px 20px;
+    border-radius: 15px;
+    background-color: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #d97706;
+}
+
 
 /* ==========================================================================
    SIDEBAR
@@ -1035,7 +1210,7 @@ div[role="alert"] a {
 }
 
 /* Auth Form Styles */
-.auth-form {
+/*form {
     background-color: #ffffff;
     padding: 2rem;
     border-radius: 1rem;
@@ -1047,167 +1222,8 @@ div[role="alert"] a {
     display: flex;
     flex-direction: column;
     gap: 0;
-}
+}*/
 
-.auth-form .form-item {
-    margin-bottom: 0;
-}
-
-.auth-form .form-item label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-}
-
-.auth-form .form-item input[type="text"],
-.auth-form .form-item input[type="password"],
-.auth-form .form-item input[type="email"] {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    color: #111827;
-    background-color: #ffffff;
-    transition: border-color 150ms, box-shadow 150ms;
-}
-
-.auth-form .form-item input[type="text"]:focus,
-.auth-form .form-item input[type="password"]:focus,
-.auth-form .form-item input[type="email"]:focus {
-    outline: none;
-    border-color: #0ea5e9;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-}
-
-.auth-form .form-item input[type="text"]::placeholder,
-.auth-form .form-item input[type="password"]::placeholder,
-.auth-form .form-item input[type="email"]::placeholder {
-    color: #9ca3af;
-}
-
-.auth-form .form-item .description {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
-}
-
-.auth-form .form-actions {
-    margin-top: 0.5rem;
-}
-
-.auth-form .form-submit,
-.auth-form button[type="submit"] {
-    display: block;
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-    background-color: #0284c7;
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: background-color 150ms;
-}
-
-.auth-form .form-submit:hover,
-.auth-form button[type="submit"]:hover {
-    background-color: #0369a1;
-}
-
-.auth-form .form-submit:focus,
-.auth-form button[type="submit"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
-}
-
-/* Password strength indicator */
-.auth-form .password-strength {
-    margin-top: 0.5rem;
-}
-
-.auth-form .password-strength__meter {
-    height: 0.25rem;
-    border-radius: 9999px;
-    background-color: #e5e7eb;
-    overflow: hidden;
-}
-
-.auth-form .password-strength__indicator {
-    height: 100%;
-    transition: width 300ms, background-color 300ms;
-}
-
-.auth-form .password-strength__text {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.25rem;
-}
-
-/* Password confirm match */
-.auth-form .password-confirm {
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-}
-
-.auth-form .password-confirm.ok {
-    color: #059669;
-}
-
-.auth-form .password-confirm.error {
-    color: #dc2626;
-}
-
-/* Checkbox styling */
-.auth-form .form-item-persistent-login {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.auth-form .form-item-persistent-login input[type="checkbox"] {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.25rem;
-    border: 2px solid #e5e7eb;
-    accent-color: #0284c7;
-}
-
-.auth-form .form-item-persistent-login label {
-    margin-bottom: 0;
-    font-size: 0.875rem;
-    color: #4b5563;
-}
-
-/* Messages on auth pages */
-.auth-form .messages {
-    padding: 1rem;
-    border-radius: 0.75rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-}
-
-.auth-form .messages--error {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-}
-
-.auth-form .messages--status {
-    background-color: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #059669;
-}
-
-.auth-form .messages--warning {
-    background-color: #fffbeb;
-    border: 1px solid #fde68a;
-    color: #d97706;
-}
 
 /* Hide some Drupal elements on auth forms */
 .page-auth .toolbar-menu-administration,
@@ -1217,13 +1233,13 @@ div[role="alert"] a {
 
 /* Hide duplicate login block on auth pages */
 .auth-page #block-intranet-megamidia-logindousuario,
-.auth-form #block-intranet-megamidia-logindousuario {
+form #block-intranet-megamidia-logindousuario {
     display: none !important;
 }
 
 /* Also hide by generic class if block ID changes */
 .auth-page .block-user-login-block,
-.auth-form .block-user-login-block {
+form .block-user-login-block {
     display: none !important;
 }
 
@@ -1240,4 +1256,33 @@ div[role="alert"] a {
 #user-login-form .description,
 #user-login-form label {
     display: none !important;
+}
+
+
+/* ==========================================================================
+   EDIT USER PAGE
+   ========================================================================== */
+
+.edit-user-page.layout-container {
+    margin: 0;    
+}
+
+.edit-user-page  fieldset[data-drupal-selector="edit-status"],
+.edit-user-page  fieldset[data-drupal-selector="edit-roles"]{
+    display: none;
+}
+
+.edit-user-page .image-widget{
+    display: flex;
+    gap: 20px;
+}
+
+.edit-user-page.layout-container .image-widget span{
+    display: none;
+}
+
+.edit-user-page input[name="user_picture_0_remove_button"]{
+    max-width: 200px;    
+    max-height: 45px;
+    align-self: center;
 }

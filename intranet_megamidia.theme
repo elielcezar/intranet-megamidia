@@ -9,6 +9,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+
+
 /**
  * Implements hook_preprocess_HOOK() for html templates.
  */
@@ -68,13 +70,39 @@ function intranet_megamidia_preprocess_page(&$variables) {
   
   // Add current user info for sidebar.
   $variables['current_user_name'] = $current_user->getDisplayName();
+  $variables['current_user_id'] = $current_user->id();
+
+  // Get custom user fields.
+  $user = \Drupal\user\Entity\User::load($current_user->id());
+  if ($user) {
+    // Get first name.
+    if ($user->hasField('field_nome') && !$user->get('field_nome')->isEmpty()) {
+      $variables['field_nome'] = $user->get('field_nome')->value;
+    }
+
+    // Get last name.
+    if ($user->hasField('field_sobrenome') && !$user->get('field_sobrenome')->isEmpty()) {
+      $variables['field_sobrenome'] = $user->get('field_sobrenome')->value;
+    }
+
+    // Create full name from custom fields.
+    if (!empty($variables['field_nome']) && !empty($variables['field_sobrenome'])) {
+      $variables['current_user_full_name'] = $variables['field_nome'] . ' ' . $variables['field_sobrenome'];
+    } elseif (!empty($variables['field_nome'])) {
+      $variables['current_user_full_name'] = $variables['field_nome'];
+    } else {
+      $variables['current_user_full_name'] = $current_user->getDisplayName();
+    }
+  }
   
   // Get user picture if available.
   $user = \Drupal\user\Entity\User::load($current_user->id());
   if ($user && $user->hasField('user_picture') && !$user->get('user_picture')->isEmpty()) {
     $variables['current_user_avatar'] = $user->get('user_picture')->entity->createFileUrl();
   } else {
-    $variables['current_user_avatar'] = 'https://picsum.photos/id/64/100/100';
+    // Get theme path and create URL for default avatar
+    $theme_path = \Drupal::theme()->getActiveTheme()->getPath();
+    $variables['current_user_avatar'] = base_path() . $theme_path . '/css/assets/user.png';
   }
   
   // Get user role for display.
