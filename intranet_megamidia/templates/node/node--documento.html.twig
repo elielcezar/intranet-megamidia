@@ -1,0 +1,179 @@
+{#
+/**
+ * @file
+ * Theme override to display a Documento (Document) node.
+ *
+ * Based on the document cards and table rows from App.tsx.
+ *
+ * Available variables:
+ * - node: The full node entity.
+ * - label: The title of the node.
+ * - content: All node items.
+ * - formatted_date: Formatted creation date.
+ * - category_name: Name of the category taxonomy term.
+ *
+ * @see template_preprocess_node()
+ */
+#}
+
+{# Set default classes #}
+{% set classes = [
+  'node',
+  'node--type-' ~ node.bundle|clean_class,
+  not node.isPublished() ? 'node--unpublished',
+  view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+] %}
+
+{# Mock data for static mockup (to be replaced with Drupal fields) #}
+{% set mock_title = label|default('Manual do Colaborador 2024.pdf') %}
+{% set mock_date = formatted_date|default('01/09/2023') %}
+{% set mock_category = category_name|default('RH') %}
+{% set mock_type = 'PDF' %}
+{% set mock_size = '2.4 MB' %}
+{% set mock_description = 'Este documento contém todas as informações necessárias para colaboradores da empresa, incluindo políticas internas, benefícios, código de conduta e procedimentos operacionais.' %}
+
+{# File type styling #}
+{% set type_classes = {
+  'PDF': 'bg-red-100 text-red-600',
+  'XLSX': 'bg-green-100 text-green-600',
+  'DOCX': 'bg-blue-100 text-blue-600',
+  'PPTX': 'bg-orange-100 text-orange-600',
+} %}
+{% set type_class = type_classes[mock_type]|default('bg-gray-100 text-gray-600') %}
+
+<article{{ attributes.addClass(classes) }}>
+  
+  {# Full View Mode #}
+  {% if view_mode == 'full' %}
+  
+    <div class="space-y-6 animate-fade-in">
+      
+      {# Document Header Card #}
+      <section class="card bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-start gap-6">
+          
+          {# File Icon #}
+          <div class="flex-shrink-0">
+            <div class="w-20 h-20 rounded-xl flex items-center justify-center {{ type_class }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+          </div>
+          
+          {# Document Info #}
+          <div class="flex-1">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">
+              {{ mock_title }}
+            </h1>
+            
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
+              <span class="inline-flex items-center gap-1">
+                <span class="font-medium">{{ 'Tipo:'|t }}</span> {{ mock_type }}
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <span class="font-medium">{{ 'Tamanho:'|t }}</span> {{ mock_size }}
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <span class="font-medium">{{ 'Categoria:'|t }}</span>
+                <span class="px-2 py-0.5 bg-gray-100 rounded text-xs text-gray-600">{{ mock_category }}</span>
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <span class="font-medium">{{ 'Atualizado em:'|t }}</span> {{ mock_date }}
+              </span>
+            </div>
+            
+            {# Description #}
+            <p class="text-gray-600 mb-6">
+              {% if content.body|render|trim %}
+                {{ content.body }}
+              {% else %}
+                {{ mock_description }}
+              {% endif %}
+            </p>
+            
+            {# Download Button #}
+            <div class="flex gap-3">
+              {% if content.field_arquivo|render|trim %}
+                {{ content.field_arquivo }}
+              {% else %}
+                <a href="#" class="btn btn--primary inline-flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-brand-700 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                  </svg>
+                  {{ 'Baixar Documento'|t }}
+                </a>
+              {% endif %}
+              
+              <button type="button" class="btn btn--secondary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                {{ 'Copiar Link'|t }}
+              </button>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+      
+      {# Related Documents (optional) #}
+      {% if content.field_relacionados|render|trim %}
+        <section class="card bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <h3 class="text-lg font-bold text-gray-900 mb-4">{{ 'Documentos Relacionados'|t }}</h3>
+          {{ content.field_relacionados }}
+        </section>
+      {% endif %}
+      
+      {# Back Link #}
+      <div class="mt-8">
+        <a href="/documentos" class="inline-flex items-center gap-2 text-brand-600 hover:text-brand-800 font-medium transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          {{ 'Voltar para Documentos'|t }}
+        </a>
+      </div>
+      
+    </div>
+  
+  {% else %}
+  
+    {# Teaser View Mode (for listings - table row style) #}
+    <div class="doc-row flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer group">
+      
+      {# File Icon #}
+      <div class="doc-row__icon w-8 h-8 rounded flex items-center justify-center {{ type_class }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+      </div>
+      
+      {# Document Info #}
+      <div class="doc-row__info flex-1 min-w-0">
+        <a href="{{ url }}" class="doc-row__name text-sm font-medium text-gray-700 truncate group-hover:text-brand-600 transition-colors block">
+          {{ mock_title }}
+        </a>
+        <p class="doc-row__size text-xs text-gray-400">{{ mock_size }}</p>
+      </div>
+      
+      {# Download Icon #}
+      <div class="doc-row__download">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-300 group-hover:text-brand-500 transition-colors">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" x2="12" y1="15" y2="3"/>
+        </svg>
+      </div>
+      
+    </div>
+  
+  {% endif %}
+  
+</article>
+

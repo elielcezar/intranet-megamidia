@@ -1,0 +1,116 @@
+{#
+/**
+ * @file
+ * Theme override for the Comunicados (Announcements) listing view.
+ *
+ * Grid layout for announcement cards.
+ *
+ * Available variables:
+ * - rows: The view results.
+ * - header: The optional header.
+ * - exposed: The exposed form widgets.
+ * - pager: The pager element.
+ * - view: The view object.
+ *
+ * @see template_preprocess_views_view()
+ */
+#}
+
+<div class="comunicados-view space-y-6 animate-fade-in">
+  
+  {# Header #}
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <h2 class="text-2xl font-bold text-gray-900">{{ 'Comunicados'|t }}</h2>
+  </div>
+
+  {# Exposed Filters (if any) #}
+  {% if exposed %}
+    <div class="card bg-white p-4 rounded-xl border border-gray-100">
+      {{ exposed }}
+    </div>
+  {% endif %}
+
+  {# Comunicados Grid - Dados Reais do Drupal #}
+  {% if view.result %}
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for row in view.result %}
+        {% set node = row._entity %}
+        {% set category = node.field_categoria.entity %}
+        
+        <div class="card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+          
+          {# Image (if exists) #}
+          {% if node.field_imagem_capa.entity %}
+            <div class="relative h-40 bg-gray-100">
+              <img 
+                src="{{ file_url(node.field_imagem_capa.entity.uri.value) }}" 
+                alt="{{ node.title.value }}"
+                class="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
+          {% endif %}
+          
+          {# Content #}
+          <div class="p-6 flex-1 flex flex-col">
+            
+            {# Header #}
+            <div class="flex justify-between items-start mb-4">
+              {% if category %}
+                {% set category_class = 'bg-brand-100 text-brand-700' %}
+                {% if category.name.value == 'TI' %}
+                  {% set category_class = 'bg-purple-100 text-purple-700' %}
+                {% elseif category.name.value == 'Diretoria' %}
+                  {% set category_class = 'bg-gray-100 text-gray-700' %}
+                {% elseif category.name.value == 'Social' %}
+                  {% set category_class = 'bg-yellow-100 text-yellow-700' %}
+                {% elseif category.name.value == 'Operações' %}
+                  {% set category_class = 'bg-green-100 text-green-700' %}
+                {% endif %}
+                
+                <span class="badge px-2 py-1 text-xs font-medium rounded-md {{ category_class }}">
+                  {{ category.name.value }}
+                </span>
+              {% endif %}
+              
+              <span class="text-xs text-gray-400">
+                {{ node.created.value|date('d/m/Y') }}
+              </span>
+            </div>
+            
+            {# Title #}
+            <h4 class="font-bold text-gray-900 mb-2 line-clamp-2">
+              {{ node.title.value }}
+            </h4>
+            
+            {# Excerpt #}
+            {% if node.field_resumo.value %}
+              <p class="text-sm text-gray-500 mb-4 line-clamp-3 flex-1">
+                {{ node.field_resumo.value }}
+              </p>
+            {% endif %}
+            
+            {# Read More #}
+            <a href="{{ path('entity.node.canonical', {'node': node.id}) }}" class="text-sm font-medium text-brand-600 hover:underline inline-flex items-center gap-1">
+              {{ 'Ler mais'|t }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
+            
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-12">
+      <p class="text-gray-500">{{ 'Nenhum comunicado encontrado.'|t }}</p>
+    </div>
+  {% endif %}
+
+  {# Pager #}
+  {% if pager %}
+    {{ pager }}
+  {% endif %}
+  
+</div>
+

@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * Theme override for a menu block.
+ *
+ * Custom styling for menu blocks in sidebar navigation.
+ *
+ * Available variables:
+ * - plugin_id: The ID of the block.
+ * - label: The block title.
+ * - content: The block content with menu items.
+ * - attributes: HTML attributes for the wrapper.
+ *
+ * @see template_preprocess_block()
+ */
+#}
+
+{% set attributes = attributes.addClass('menu-block') %}
+
+<nav{{ attributes }} aria-labelledby="{{ heading_id }}">
+  
+  {# Title - hidden by default for sidebar menus #}
+  {{ title_prefix }}
+  {% if label %}
+    <h2{{ title_attributes.addClass('sr-only') }} id="{{ heading_id }}">{{ label }}</h2>
+  {% endif %}
+  {{ title_suffix }}
+  
+  {# Menu Content #}
+  {% block content %}
+    {{ content }}
+  {% endblock %}
+  
+</nav>
+

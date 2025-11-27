@@ -1,0 +1,19 @@
+name: Intranet Megamidia
+type: theme
+description: 'Tema personalizado para a Intranet corporativa da Megamidia. Design moderno com sidebar, dashboard e gestão de comunicados, documentos e eventos.'
+core_version_requirement: ^10
+base theme: stable9
+
+libraries:
+  - intranet_megamidia/global-styles
+
+regions:
+  header: 'Header'
+  sidebar: 'Sidebar'
+  content: 'Content'
+  footer: 'Footer'
+  highlighted: 'Highlighted'
+  help: 'Help'
+  page_top: 'Page Top'
+  page_bottom: 'Page Bottom'
+

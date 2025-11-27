@@ -1,0 +1,31 @@
+{#
+/**
+ * Template do item da View Próximos Eventos.
+ * Formato compacto com widget de data.
+ */
+#}
+<div class="flex gap-4 items-start card mini-card bg-white p-6 gap-6 rounded-2xl shadow-sm border border-gray-100 mb-6 hover:shadow-md transition-shadow">
+  {# Date Widget #}
+  <div class="date-widget flex-shrink-0 w-12 h-12 bg-brand-50 rounded-xl flex flex-col items-center justify-center text-brand-700 border border-brand-100">
+    <span class="date-widget__month text-xs font-bold uppercase">
+      {{ fields.field_data.content }}
+    </span>
+    <span class="date-widget__day text-lg font-bold leading-none">
+      {{ fields.field_data_1 .content }}
+    </span>
+  </div>
+  {# Event Info #}
+  <div>
+    <h5 class="font-semibold text-gray-900 text-base">
+      <a href="{{ fields.view_node_1.content }}" class="hover:text-brand-600">
+        {{ fields.title.content }}
+      </a>
+    </h5>    
+    <p class="text-sm text-gray-500 mt-1">
+      {% if fields.field_data_2.content %}{{ fields.field_data_2.content }}{% endif %}      
+    </p>
+    <p class="text-sm text-gray-500 mt-1">      
+      {% if fields.field_local.content %}{{ fields.field_local.content }}{% endif %}
+    </p>
+  </div>
+</div>

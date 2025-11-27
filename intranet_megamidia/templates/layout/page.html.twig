@@ -1,0 +1,58 @@
+{#
+/**
+ * @file
+ * Theme override to display a single page.
+ *
+ * Layout structure: Flex container with sidebar + main content area.
+ * Based on the mockup App.tsx component structure.
+ */
+#}
+
+<div class="layout-container flex h-screen bg-gray-50 overflow-hidden font-sans">
+  
+  {# Mobile Overlay #}
+  <div class="js-sidebar-overlay sidebar-overlay hidden md:hidden"></div>
+  
+  {# Sidebar #}
+  {% include '@intranet_megamidia/includes/sidebar.html.twig' %}
+  
+  {# Main Content Wrapper #}
+  <div class="layout-main-wrapper flex-1 flex flex-col min-w-0 overflow-hidden">
+    
+    {# Header #}
+    {% include '@intranet_megamidia/includes/header.html.twig' %}
+    
+    {# Main Content #}
+    <main id="main-content" class="layout-content flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+      <div class="layout-content-inner max-w-7xl mx-auto">
+        
+        {# Messages #}
+        {% if page.highlighted %}
+          <div class="mb-6">
+            {{ page.highlighted }}
+          </div>
+        {% endif %}
+        
+        {# Help Region #}
+        {% if page.help %}
+          <div class="mb-6">
+            {{ page.help }}
+          </div>
+        {% endif %}
+        
+        {# Page Content #}
+        <div class="animate-fade-in">
+          {{ page.content }}
+        </div>
+        
+      </div>
+    </main>
+    
+    {# Footer #}
+    {% if page.footer %}
+      {% include '@intranet_megamidia/includes/footer.html.twig' %}
+    {% endif %}
+    
+  </div>
+</div>
+

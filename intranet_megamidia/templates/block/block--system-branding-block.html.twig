@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * Theme override for a branding block.
+ *
+ * Custom styling for the logo/site name in header or sidebar.
+ *
+ * Available variables:
+ * - site_logo: The logo image URL if set.
+ * - site_name: The site name.
+ * - site_slogan: The site slogan.
+ *
+ * @see template_preprocess_block()
+ */
+#}
+
+{% set attributes = attributes.addClass('branding-block') %}
+
+<div{{ attributes }}>
+  {{ title_prefix }}
+  {{ title_suffix }}
+  
+  <a href="{{ path('<front>') }}" class="flex items-center gap-2 text-brand-700 font-bold text-xl no-underline group" rel="home">
+    
+    {% if site_logo %}
+      <img src="{{ site_logo }}" alt="{{ site_name }}" class="w-8 h-8 rounded-lg" />
+    {% else %}
+      <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white group-hover:bg-brand-700 transition-colors">
+        <span class="font-bold">I</span>
+      </div>
+    {% endif %}
+    
+    {% if site_name %}
+      <span class="sidebar__logo-text group-hover:text-brand-800 transition-colors">{{ site_name }}</span>
+    {% endif %}
+    
+  </a>
+  
+  {% if site_slogan %}
+    <p class="text-xs text-gray-500 mt-1">{{ site_slogan }}</p>
+  {% endif %}
+  
+</div>
+

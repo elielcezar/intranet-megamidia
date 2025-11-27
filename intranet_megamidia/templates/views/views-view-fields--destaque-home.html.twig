@@ -1,0 +1,50 @@
+{#
+/**
+ * Template do item da View Comunicado Destaque.
+ * Formato Hero Card.
+ */
+#}
+<div class="hero card card--large bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col md:flex-row">
+  
+  {# Hero Image #}
+  <div class="hero__image-wrapper md:w-1/2 relative h-64 md:h-auto">
+    {% if fields.field_imagem_capa.content %}
+      <div class="hero__image absolute inset-0 w-full h-full">
+        {{ fields.field_imagem_capa.content }}
+      </div>
+    {% else %}
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-500 to-brand-700"></div>
+    {% endif %}
+    <div class="hero__gradient absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden"></div>
+  </div>
+  
+  {# Hero Content #}
+  <div class="hero__content md:w-1/2 p-8 flex flex-col justify-center">
+    
+    {# Meta #}
+    <div class="flex items-center gap-2 mb-4 flex-wrap">
+      {% if fields.field_categoria.content %}
+        <span class="badge px-3 py-1 text-xs font-semibold tracking-wide uppercase rounded-full bg-brand-100 text-brand-700">
+          {{ fields.field_categoria.content }}
+        </span>
+      {% endif %}
+      <span class="text-sm text-gray-500">{{ fields.created.content }}</span>
+    </div>
+    
+    {# Title #}
+    <h1 class="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+      {{ fields.title.content }}
+    </h1>
+    
+    {# Excerpt #}
+    {% if fields.field_resumo.content %}
+    <p class="text-gray-600 mb-6 text-lg">
+      {{ fields.field_resumo.content }}
+    </p>
+    {% endif %}
+    
+    {# Read More Link #}
+    {{ fields.view_node.content }}
+    
+  </div>
+</div>

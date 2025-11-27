@@ -1,0 +1,78 @@
+{#
+/**
+ * Template para View Documentos Home.
+ * Lista compacta de documentos recentes no dashboard.
+ */
+#}
+
+{% set type_classes = {
+  'pdf': 'bg-red-100 text-red-600',
+  'xlsx': 'bg-green-100 text-green-600',
+  'xls': 'bg-green-100 text-green-600',
+  'docx': 'bg-blue-100 text-blue-600',
+  'doc': 'bg-blue-100 text-blue-600',
+  'pptx': 'bg-orange-100 text-orange-600',
+  'ppt': 'bg-orange-100 text-orange-600',
+} %}
+
+<div class="card bg-white p-6 rounded-2xl shadow-sm border border-gray-100">       
+  <ul class="space-y-3">
+    {% if view.result %}
+      {% for row in view.result %}
+        {% set node = row._entity %}
+        {% set file = node.field_arquivo.entity %}
+        
+        {# Detectar extensão do arquivo #}
+        {% set file_extension = '' %}
+        {% if file %}
+          {% set filename_parts = file.filename.value|split('.') %}
+          {% set file_extension = filename_parts|last|lower %}
+        {% endif %}
+        
+        <li class="doc-row flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer group">
+          {# Icon #}
+          <div class="doc-row__icon w-8 h-8 rounded flex items-center justify-center {{ type_classes[file_extension]|default('bg-gray-100 text-gray-500') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          
+          {# Info #}
+          <div class="doc-row__info flex-1 min-w-0">
+            <p class="doc-row__name text-sm font-medium text-gray-700 group-hover:text-brand-600 transition-colors">
+              {{ node.title.value }}
+            </p>
+            {% if file %}
+              {% set filesize_bytes = file.filesize.value %}
+              <p class="doc-row__size text-xs text-gray-400">
+                {% if filesize_bytes < 1024 %}
+                  {{ filesize_bytes }} B
+                {% elseif filesize_bytes < 1048576 %}
+                  {{ (filesize_bytes / 1024)|number_format(0) }} KB
+                {% else %}
+                  {{ (filesize_bytes / 1048576)|number_format(1) }} MB
+                {% endif %}
+              </p>
+            {% endif %}
+          </div>
+          
+          {# Download Icon/Link #}
+          {% if file %}
+            <a href="{{ file_url(file.uri.value) }}" download>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="doc-row__download w-4 h-4 text-gray-300 group-hover:text-brand-500 transition-colors">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" x2="12" y1="15" y2="3"/>
+              </svg>
+            </a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    {% else %}
+      <li class="text-center py-4 text-gray-500 text-sm">
+        {{ 'Nenhum documento encontrado.'|t }}
+      </li>
+    {% endif %}
+  </ul>
+</div>

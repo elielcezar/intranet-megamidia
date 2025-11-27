@@ -1,0 +1,66 @@
+{#
+/**
+ * @file
+ * Template para a página Home (Dashboard).
+ */
+#}
+
+{% set featured_view = drupal_view('destaque_home', 'block_1') %}
+{% set comunicados_view = drupal_view('comunicados_home', 'block_1') %}
+{% set eventos_view = drupal_view('eventos_home', 'block_1') %}
+{% set documentos_view = drupal_view('documentos_home', 'block_1') %}
+
+<article{{ attributes.addClass('dashboard-view', 'space-y-8', 'animate-fade-in') }}>
+  
+  {# ===== Hero Section - Featured Announcement ===== #}
+  <section class="hero-section">
+    {{ featured_view }}
+  </section>
+
+  {# ===== Main Content Grid ===== #}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    {# ----- Left Column: Recent Announcements ----- #}
+    <div class="lg:col-span-2 space-y-6">
+      
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-xl font-bold text-gray-900">{{ 'Comunicados Recentes'|t }}</h3>
+      </div>
+      
+      {# Comunicados Grid - usando a View #}
+      <div class="flex flex-col flex-wrap column-gap-6">
+        {{ comunicados_view }}
+      </div>
+      
+    </div>
+
+    {# ----- Right Column: Events & Documents Widgets ----- #}
+    <div class="space-y-6">
+      
+      {# Events Widget #}
+      <div class="flex items-center justify-between mb-0">
+          <h3 class="text-xl font-bold text-gray-900">{{ 'Próximos Eventos'|t }}</h3>
+          <a href="/agenda" class="text-sm text-brand-600 hover:text-brand-800">
+            {{ 'Ver tudo'|t }}
+          </a>
+        </div>
+      
+        <div class="space-y-6">
+          {{ eventos_view }}
+        </div>
+      
+
+      {# Documents Widget #}
+       <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl font-bold text-gray-900">{{ 'Documentos Úteis'|t }}</h3>
+          <a href="/documentos" class="text-sm text-brand-600 hover:text-brand-800">
+            {{ 'Ver tudo'|t }}
+          </a>
+        </div>
+
+      {{ documentos_view }}
+      
+    </div>
+  </div>
+  
+</article>

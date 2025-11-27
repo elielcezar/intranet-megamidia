@@ -1,0 +1,99 @@
+{#
+/**
+ * @file
+ * Header component template.
+ *
+ * Contains mobile menu toggle, welcome message, search bar, and notifications.
+ * Based on the Header component from App.tsx.
+ *
+ * Available variables:
+ * - current_user_name: Display name of the logged-in user.
+ */
+#}
+
+{# Mock user data (to be replaced with Drupal variables) #}
+{% set user_name = current_user_name|default('Ana Silva') %}
+{% set first_name = user_name|split(' ')|first %}
+
+<header class="header h-20 bg-white border-b border-gray-200 sticky top-0 z-10 px-4 md:px-8 flex items-center justify-between gap-4">
+  
+  {# Left Section: Mobile Menu Toggle + Welcome #}
+  <div class="flex items-center gap-4">
+    {# Mobile Menu Toggle #}
+    <button 
+      type="button"
+      class="js-sidebar-toggle header__menu-toggle p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg md:hidden"
+      aria-label="{{ 'Toggle menu'|t }}"
+    >
+      {# Menu Icon #}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+        <line x1="4" x2="20" y1="12" y2="12"/>
+        <line x1="4" x2="20" y1="6" y2="6"/>
+        <line x1="4" x2="20" y1="18" y2="18"/>
+      </svg>
+    </button>
+    
+    {# Welcome Message #}
+    <h2 class="header__welcome hidden md:block text-xl font-semibold text-gray-800">
+      {{ 'Bem-vindo, @name'|t({'@name': first_name}) }}
+    </h2>
+  </div>
+
+  {# Center Section: Search Bar #}
+  <div class="header__search flex-1 max-w-2xl mx-auto">
+    <form action="{{ path('search.view') }}" method="get" class="js-search-form header__search-form relative group">
+      {# Search Icon #}
+      <div class="header__search-icon absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="js-search-icon w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+      </div>
+      
+      {# Search Input #}
+      <input
+        type="text"
+        name="keys"
+        placeholder="{{ 'O que você procura? (Ex: Política de Home Office)'|t }}"
+        class="header__search-input block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-2xl leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-brand-500 transition-all shadow-sm"
+      />
+      
+      {# Search Hint #}
+      <div class="header__search-hint absolute inset-y-0 right-0 pr-3 hidden sm:flex items-center">
+        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
+          {{ 'Enter para buscar'|t }}
+        </span>
+      </div>
+    </form>
+  </div>
+
+  {# Right Section: Actions #}
+  <div class="header__actions flex items-center gap-2 sm:gap-4">
+    
+    {# Notifications Bell #}
+    <button 
+      type="button"
+      class="js-notification-bell header__notification relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+      aria-label="{{ 'Notifications'|t }}"
+    >
+      {# Bell Icon #}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </svg>
+      {# Notification Badge #}
+      <span class="header__notification-badge absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+    </button>
+    
+    {# User Menu (optional - for logout, profile links) #}
+    {#
+    {% if logged_in %}
+    <a href="{{ path('user.page') }}" class="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+      <span class="font-medium">{{ first_name }}</span>
+    </a>
+    {% endif %}
+    #}
+    
+  </div>
+</header>
+

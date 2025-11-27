@@ -1,0 +1,7 @@
+NOTA: Substitua este arquivo por uma imagem screenshot.png do tema.
+
+O screenshot deve ter 588x438 pixels e mostrar o layout do dashboard
+com a sidebar, header e conteúdo principal visíveis.
+
+Este arquivo pode ser deletado após adicionar o screenshot real.
+

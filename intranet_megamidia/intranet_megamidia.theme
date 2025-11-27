@@ -1,0 +1,227 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the Intranet Megamidia theme.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+/**
+ * Implements hook_preprocess_HOOK() for html templates.
+ */
+function intranet_megamidia_preprocess_html(&$variables) {
+  $current_user = \Drupal::currentUser();
+  
+  // Redirect anonymous users to login page (except on auth pages).
+  if ($current_user->isAnonymous()) {
+    // Get internal path (e.g., /user/login, /node/1)
+    $current_path = \Drupal::service('path.current')->getPath();
+    
+    // Auth paths to allow (internal paths without base URL)
+    $auth_paths = [
+      '/user/login',
+      '/user/register',
+      '/user/password',
+      '/user/reset',
+    ];
+    
+    // Check if current path starts with any auth path.
+    $is_auth_page = FALSE;
+    foreach ($auth_paths as $auth_path) {
+      if (strpos($current_path, $auth_path) === 0) {
+        $is_auth_page = TRUE;
+        break;
+      }
+    }
+    
+    // Redirect to login if not on auth page.
+    if (!$is_auth_page) {
+      // Use Drupal's URL generator to get the correct URL with base path
+      $login_url = Url::fromRoute('user.login')->toString();
+      $response = new RedirectResponse($login_url, 302);
+      $response->send();
+      exit;
+    }
+  }
+  
+  // Add body class for auth pages.
+  $variables['is_auth_page'] = FALSE;
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  $auth_routes = ['user.login', 'user.register', 'user.pass', 'user.reset'];
+  if (in_array($route_name, $auth_routes)) {
+    $variables['is_auth_page'] = TRUE;
+    $variables['attributes']['class'][] = 'page-auth';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page templates.
+ */
+function intranet_megamidia_preprocess_page(&$variables) {
+  $current_user = \Drupal::currentUser();
+  
+  // Add anonymous flag.
+  $variables['is_anonymous'] = $current_user->isAnonymous();
+  
+  // Add current user info for sidebar.
+  $variables['current_user_name'] = $current_user->getDisplayName();
+  
+  // Get user picture if available.
+  $user = \Drupal\user\Entity\User::load($current_user->id());
+  if ($user && $user->hasField('user_picture') && !$user->get('user_picture')->isEmpty()) {
+    $variables['current_user_avatar'] = $user->get('user_picture')->entity->createFileUrl();
+  } else {
+    $variables['current_user_avatar'] = 'https://picsum.photos/id/64/100/100';
+  }
+  
+  // Get user role for display.
+  $roles = $current_user->getRoles();
+  $role_labels = [];
+  foreach ($roles as $role_id) {
+    if ($role_id !== 'authenticated') {
+      $role = \Drupal\user\Entity\Role::load($role_id);
+      if ($role) {
+        $role_labels[] = $role->label();
+      }
+    }
+  }
+  $variables['current_user_role'] = !empty($role_labels) ? implode(', ', $role_labels) : 'Colaborador';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node templates.
+ */
+function intranet_megamidia_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  
+  // Add formatted date.
+  $variables['formatted_date'] = \Drupal::service('date.formatter')->format(
+    $node->getCreatedTime(),
+    'custom',
+    'd/m/Y'
+  );
+  
+  // Add category color class based on taxonomy term if exists.
+  if ($node->hasField('field_categoria') && !$node->get('field_categoria')->isEmpty()) {
+    $term = $node->get('field_categoria')->entity;
+    if ($term) {
+      $variables['category_name'] = $term->getName();
+      $variables['category_class'] = intranet_megamidia_get_category_class($term->getName());
+    }
+  }
+}
+
+/**
+ * Helper function to get category color class.
+ */
+function intranet_megamidia_get_category_class($category_name) {
+  $classes = [
+    'RH' => 'bg-brand-100 text-brand-700',
+    'TI' => 'bg-purple-100 text-purple-700',
+    'Diretoria' => 'bg-gray-100 text-gray-700',
+    'Social' => 'bg-yellow-100 text-yellow-700',
+    'Operações' => 'bg-green-100 text-green-700',
+  ];
+  
+  return $classes[$category_name] ?? 'bg-gray-100 text-gray-700';
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function intranet_megamidia_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Style the search form.
+  if ($form_id === 'search_block_form' || $form_id === 'search_form') {
+    $form['keys']['#attributes']['class'][] = 'block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-2xl leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-brand-500 transition-all shadow-sm';
+    $form['keys']['#attributes']['placeholder'] = t('O que você procura?');
+  }
+  
+  // Style authentication forms.
+  $auth_forms = ['user_login_form', 'user_register_form', 'user_pass'];
+  if (in_array($form_id, $auth_forms)) {
+    // Common input styles.
+    $input_classes = 'block w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-0 transition-colors';
+    $label_classes = 'block text-sm font-medium text-gray-700 mb-2';
+    
+    // Style login form.
+    if ($form_id === 'user_login_form') {
+      // Username/Email field.
+      if (isset($form['name'])) {
+        $form['name']['#attributes']['class'][] = $input_classes;
+        $form['name']['#attributes']['placeholder'] = t('Digite seu usuário ou e-mail');
+        $form['name']['#title_display'] = 'before';
+        $form['name']['#title'] = t('Usuário ou E-mail');
+      }
+      
+      // Password field.
+      if (isset($form['pass'])) {
+        $form['pass']['#attributes']['class'][] = $input_classes;
+        $form['pass']['#attributes']['placeholder'] = t('Digite sua senha');
+        $form['pass']['#title_display'] = 'before';
+        $form['pass']['#title'] = t('Senha');
+      }
+      
+      // Submit button.
+      if (isset($form['actions']['submit'])) {
+        $form['actions']['submit']['#attributes']['class'][] = 'w-full px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-colors';
+        $form['actions']['submit']['#value'] = t('Entrar');
+      }
+      
+      // Add forgot password link.
+      $password_url = Url::fromRoute('user.pass')->toString();
+      $form['actions']['forgot_password'] = [
+        '#type' => 'markup',
+        '#markup' => '<div class="mt-4 text-center"><a href="' . $password_url . '" class="text-sm text-brand-600 hover:text-brand-700">' . t('Esqueceu sua senha?') . '</a></div>',
+        '#weight' => 100,
+      ];
+    }
+    
+    // Style registration form.
+    if ($form_id === 'user_register_form') {
+      // Email field.
+      if (isset($form['account']['mail'])) {
+        $form['account']['mail']['#attributes']['class'][] = $input_classes;
+        $form['account']['mail']['#attributes']['placeholder'] = t('seu@email.com');
+      }
+      
+      // Username field.
+      if (isset($form['account']['name'])) {
+        $form['account']['name']['#attributes']['class'][] = $input_classes;
+        $form['account']['name']['#attributes']['placeholder'] = t('Escolha um nome de usuário');
+      }
+      
+      // Password fields.
+      if (isset($form['account']['pass'])) {
+        $form['account']['pass']['#attributes']['class'][] = $input_classes;
+      }
+      
+      // Submit button.
+      if (isset($form['actions']['submit'])) {
+        $form['actions']['submit']['#attributes']['class'][] = 'w-full px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-colors';
+        $form['actions']['submit']['#value'] = t('Criar conta');
+      }
+    }
+    
+    // Style password reset form.
+    if ($form_id === 'user_pass') {
+      // Email/username field.
+      if (isset($form['name'])) {
+        $form['name']['#attributes']['class'][] = $input_classes;
+        $form['name']['#attributes']['placeholder'] = t('Digite seu usuário ou e-mail');
+        $form['name']['#title'] = t('Usuário ou E-mail');
+      }
+      
+      // Submit button.
+      if (isset($form['actions']['submit'])) {
+        $form['actions']['submit']['#attributes']['class'][] = 'w-full px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-colors';
+        $form['actions']['submit']['#value'] = t('Enviar instruções');
+      }
+    }
+    
+    // Add wrapper class to all auth forms.
+    $form['#attributes']['class'][] = 'auth-form-inner space-y-6';
+  }
+}

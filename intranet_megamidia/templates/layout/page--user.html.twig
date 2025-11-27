@@ -1,0 +1,107 @@
+{#
+/**
+ * @file
+ * Theme override for user pages (generic).
+ * 
+ * This template is used as a fallback for all user routes
+ * that don't have a specific template.
+ * 
+ * Split-screen layout:
+ * - Left: Branding/image
+ * - Right: Content/form
+ */
+#}
+
+<div class="auth-page min-h-screen flex">
+  
+  {# Left Side - Branding #}
+  <div class="auth-page__branding hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 relative overflow-hidden">
+    
+    {# Background Pattern #}
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+    </div>
+    
+    {# Decorative Circles #}
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-brand-400/10 rounded-full blur-3xl"></div>
+    
+    {# Content #}
+    <div class="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+      
+      {# Logo #}
+      <div class="mb-12">
+        <div class="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+      </div>
+      
+      {# Text #}
+      <h1 class="text-4xl font-bold mb-4 text-center">
+        {{ 'Intranet Megamidia'|t }}
+      </h1>
+      <p class="text-xl text-brand-100 text-center max-w-md leading-relaxed">
+        {{ 'Sua plataforma de comunicação corporativa'|t }}
+      </p>
+      
+    </div>
+  </div>
+  
+  {# Right Side - Content #}
+  <div class="auth-page__form w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+    <div class="w-full max-w-md">
+      
+      {# Mobile Logo #}
+      <div class="lg:hidden mb-8 text-center">
+        <div class="w-16 h-16 bg-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">{{ 'Intranet'|t }}</h2>
+      </div>
+      
+      {# Messages #}
+      {% if page.highlighted %}
+        <div class="mb-6">
+          {{ page.highlighted }}
+        </div>
+      {% endif %}
+      
+      {# Content #}
+      <div class="auth-form bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        {{ page.content }}
+      </div>
+      
+      {# Links #}
+      <div class="mt-6 text-center space-y-4">
+        <p class="text-gray-500">
+          <a href="{{ path('user.login') }}" class="text-brand-600 font-semibold hover:text-brand-700">
+            {{ 'Voltar ao login'|t }}
+          </a>
+        </p>
+      </div>
+      
+      {# Footer #}
+      <div class="mt-12 text-center text-sm text-gray-400">
+        <p>&copy; {{ 'now'|date('Y') }} {{ 'Megamidia. Todos os direitos reservados.'|t }}</p>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+

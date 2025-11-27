@@ -1,0 +1,34 @@
+{#
+/**
+ * Template do item da View Últimos Comunicados.
+ * Formato Mini Card.
+ */
+#}
+<div class="card mini-card bg-white p-6 gap-6 rounded-2xl shadow-sm border border-gray-100 mb-6 hover:shadow-md transition-shadow">
+  
+    <div class="mini-card__header flex justify-between items-start">   
+      {% if fields.field_categoria.content %}
+        <span class="badge px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-700">
+          {{ fields.field_categoria.content }}
+        </span>
+      {% endif %}   
+      <span class="text-sm text-gray-400">{{ fields.created.content }}</span>        
+    </div> 
+
+    {# Title #}
+    <h4 class="mini-card__title  text-gray-900 mb-2 line-clamp-2">
+      {{ fields.title.content }}
+    </h4> 
+  
+    {# Excerpt #}
+    {% if fields.field_resumo.content %}
+    <p class="mini-card__excerpt text-base text-gray-500 mb-4 line-clamp-3">
+      {{ fields.field_resumo.content }}
+    </p>
+    {% endif %}
+    
+    {# Read More #}
+    {{ fields.view_node.content }}
+  
+  
+</div>
