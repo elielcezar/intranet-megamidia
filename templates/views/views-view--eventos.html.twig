@@ -15,46 +15,6 @@
  */
 #}
 
-{# Mock data for static mockup #}
-{% set mock_events = [
-  {
-    'id': 'e1',
-    'title': 'Town Hall Global',
-    'description': 'Reunião mensal com toda a empresa para alinhamento estratégico.',
-    'date': '2023-11-05',
-    'time': '10:00',
-    'location': 'Auditório Principal & Zoom',
-    'category': 'Diretoria',
-  },
-  {
-    'id': 'e2',
-    'title': 'Treinamento de Compliance',
-    'description': 'Treinamento obrigatório para novos colaboradores.',
-    'date': '2023-11-08',
-    'time': '14:00',
-    'location': 'Sala de Treinamento 2',
-    'category': 'RH',
-  },
-  {
-    'id': 'e3',
-    'title': 'Workshop de Inovação',
-    'description': 'Sessão de brainstorming para novos produtos.',
-    'date': '2023-11-12',
-    'time': '09:00',
-    'location': 'Lab Criativo',
-    'category': 'Operações',
-  },
-  {
-    'id': 'e4',
-    'title': 'Happy Hour Mensal',
-    'description': 'Confraternização no terraço com toda a equipe.',
-    'date': '2023-11-24',
-    'time': '18:00',
-    'location': 'Rooftop',
-    'category': 'Social',
-  },
-] %}
-
 {# Category indicator colors #}
 {% set category_indicators = {
   'Social': 'bg-yellow-400',
@@ -93,93 +53,129 @@
   
   {# Header #}
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <h2 class="text-2xl font-bold text-gray-900">{{ 'Agenda Corporativa'|t }}</h2>
-    <div class="flex gap-2">
-      <button type="button" class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-        {{ 'Mês'|t }}
-      </button>
-      <button type="button" class="px-3 py-1.5 bg-brand-50 border border-brand-200 rounded-lg text-sm text-brand-700 font-medium">
-        {{ 'Lista'|t }}
-      </button>
-    </div>
+    <h2 class="text-2xl font-bold text-gray-900">{{ 'Agenda Corporativa'|t }}</h2> 
   </div>
 
-  {# Exposed Filters (if any) #}
-  {% if exposed %}
-    <div class="card bg-white p-4 rounded-xl border border-gray-100">
-      {{ exposed }}
-    </div>
-  {% endif %}
-
-  {# Events Grid #}
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {% for event in mock_events %}
-      {% set weekday = event.date|date('l') %}
-      {% set day = event.date|date('d') %}
-      {% set month = event.date|date('F') %}
-      {% set indicator_class = category_indicators[event.category]|default('bg-gray-400') %}
-      
-      <div class="event-card card bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col relative overflow-hidden group hover:shadow-md transition-all">
+  {# Events Grid - Dados Reais do Drupal #}
+  {% if view.result %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for row in view.result %}
+        {% set node = row._entity %}
+        {% set category = node.field_categoria.entity %}
+        {% set event_date = node.field_data.value %}
+        {% set event_time = node.field_data_1.value %}
+        {% set event_location = node.field_local.value %}
+        {% set event_resumo = node.field_resumo.value %}
+        {% set event_image = node.field_imagem_capa.entity %}
         
-        {# Category Indicator #}
-        <div class="event-card__indicator absolute top-0 left-0 w-1 h-full {{ indicator_class }}"></div>
+        {% if event_date %}
+          {% set weekday = event_date|date('l') %}
+          {% set day = event_date|date('d') %}
+          {% set month = event_date|date('F') %}
+        {% endif %}
         
-        {# Header #}
-        <div class="event-card__header flex justify-between items-start mb-4 pl-4">
-          <div>
-            <span class="event-card__weekday text-sm font-bold text-gray-400 uppercase tracking-wider">
-              {{ weekday_pt[weekday]|default(weekday) }}
-            </span>
-            <div class="event-card__date text-2xl font-bold text-gray-900">
-              {{ day }} de {{ month_pt[month]|default(month) }}
-            </div>
-          </div>
-          <div class="p-2 bg-gray-50 rounded-lg text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-              <line x1="16" x2="16" y1="2" y2="6"/>
-              <line x1="8" x2="8" y1="2" y2="6"/>
-              <line x1="3" x2="21" y1="10" y2="10"/>
-            </svg>
-          </div>
-        </div>
-
-        {# Content #}
-        <div class="pl-4 flex-1">
-          <h3 class="event-card__title text-lg font-bold text-gray-900 mb-2">{{ event.title }}</h3>
-          <p class="event-card__description text-gray-500 text-sm mb-4">{{ event.description }}</p>
+        {% set indicator_class = 'bg-gray-400' %}
+        {% if category %}
+          {% if category.name.value == 'Social' %}
+            {% set indicator_class = 'bg-yellow-400' %}
+          {% elseif category.name.value == 'RH' %}
+            {% set indicator_class = 'bg-brand-500' %}
+          {% elseif category.name.value == 'Diretoria' %}
+            {% set indicator_class = 'bg-gray-400' %}
+          {% elseif category.name.value == 'TI' %}
+            {% set indicator_class = 'bg-purple-500' %}
+          {% elseif category.name.value == 'Operações' %}
+            {% set indicator_class = 'bg-green-500' %}
+          {% endif %}
+        {% endif %}
+        
+        <div class="event-card card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative group hover:shadow-md transition-all">                   
           
-          {# Meta #}
-          <div class="event-card__meta flex flex-col gap-2 text-sm text-gray-600 border-t border-gray-100 pt-4">
-            <div class="flex items-center gap-2">
-              <span class="event-card__meta-label w-20 text-gray-400 text-xs uppercase font-semibold">{{ 'Horário:'|t }}</span>
-              <span>{{ event.time }}</span>
+          {# Category Indicator #}
+          <div class="event-card__indicator absolute top-0 left-0 w-1 h-full {{ indicator_class }}"></div>
+          
+          <div class="flex-1 flex flex-col">
+            {# Header #}
+            <div class="event-card__header flex justify-between items-start mb-4">
+              <div>
+                {% if event_date %}
+                  <span class="event-card__weekday text-sm font-bold text-gray-400 uppercase tracking-wider">
+                    {{ weekday_pt[weekday]|default(weekday) }}
+                  </span>
+                  <div class="event-card__date text-2xl font-bold text-gray-900">
+                    {{ day }} de {{ month_pt[month]|default(month) }}
+                  </div>
+                {% endif %}
+              </div>
+              <div class="p-2 bg-gray-50 rounded-lg text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                  <line x1="16" x2="16" y1="2" y2="6"/>
+                  <line x1="8" x2="8" y1="2" y2="6"/>
+                  <line x1="3" x2="21" y1="10" y2="10"/>
+                </svg>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="event-card__meta-label w-20 text-gray-400 text-xs uppercase font-semibold">{{ 'Local:'|t }}</span>
-              <span>{{ event.location }}</span>
+
+            {# Content #}
+            <div class="flex gap-4 flex-1">
+               {# Image (if exists) #}
+                {% if event_image %}
+                  <div class="w-[75px] h-[75px] flex-shrink-0">
+                    <img 
+                      src="{{ file_url(event_image.uri.value) }}" 
+                      alt="{{ node.title.value }}"
+                      class="w-[75px] h-[75px] object-cover rounded-full border-2 border-gray-200"
+                    />
+                  </div>
+                {% endif %}
+                <div>
+                  <h3 class="event-card__title text-lg font-bold text-gray-900 mb-2 leading-none">{{ node.title.value }}</h3>
+                  {% if event_resumo %}
+                    <p class="event-card__description text-gray-500 text-sm mb-4 line-clamp-3">{{ event_resumo }}</p>
+                  {% endif %}
+                </div>              
             </div>
+
+            {# Meta #}
+                <div class="event-card__meta flex flex-col gap-2 text-sm text-gray-600 border-t border-gray-100 pt-4">
+                  {% if event_time %}
+                    <div class="flex items-center gap-2">
+                      <span class="event-card__meta-label w-20 text-gray-400 text-xs uppercase font-semibold">{{ 'Horário:'|t }}</span>
+                      <span>{{ event_time }}</span>
+                    </div>
+                  {% endif %}
+                  {% if event_location %}
+                    <div class="flex items-center gap-2">
+                      <span class="event-card__meta-label w-20 text-gray-400 text-xs uppercase font-semibold">{{ 'Local:'|t }}</span>
+                      <span>{{ event_location }}</span>
+                    </div>
+                  {% endif %}
+                </div>
+            
+            {# Actions #}
+            <div class="mt-6 flex flex-col gap-2">
+              <!--a href="{{ path('entity.node.canonical', {'node': node.id}) }}" class="w-full py-2 border border-brand-200 text-brand-600 rounded-lg text-sm font-medium hover:bg-brand-50 transition-colors text-center">
+                {{ 'Ver Detalhes'|t }}
+              </a-->
+              {% if can_edit_content %}
+                <a href="{{ path('entity.node.edit_form', {'node': node.id}) }}" class="text-xs text-center text-gray-600 hover:text-gray-900 font-medium">
+                  {{ 'Editar'|t }}
+                </a>
+              {% endif %}
+            </div>
+            
           </div>
         </div>
-        
-        {# Action Button #}
-        <div class="pl-4 mt-6">
-          <button type="button" class="w-full py-2 border border-brand-200 text-brand-600 rounded-lg text-sm font-medium hover:bg-brand-50 transition-colors">
-            {{ 'Adicionar ao Calendário'|t }}
-          </button>
-        </div>
-        
-      </div>
-    {% endfor %}
-  </div>
-
-  {# Drupal View Rows (if provided) #}
-  {% if rows %}
-    <div class="drupal-view-content mt-8">
-      {{ rows }}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-12">
+      <p class="text-gray-500">{{ 'Nenhum evento encontrado.'|t }}</p>
     </div>
   {% endif %}
 
+  
   {# Pager #}
   {% if pager %}
     {{ pager }}

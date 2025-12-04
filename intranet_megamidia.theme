@@ -70,7 +70,7 @@ function intranet_megamidia_preprocess_page(&$variables) {
   
   // Add current user info for sidebar.
   $variables['current_user_name'] = $current_user->getDisplayName();
-  $variables['current_user_id'] = $current_user->id();
+  $variables['current_user_id'] = $current_user->id();  
 
   // Get custom user fields.
   $user = \Drupal\user\Entity\User::load($current_user->id());
@@ -83,6 +83,11 @@ function intranet_megamidia_preprocess_page(&$variables) {
     // Get last name.
     if ($user->hasField('field_sobrenome') && !$user->get('field_sobrenome')->isEmpty()) {
       $variables['field_sobrenome'] = $user->get('field_sobrenome')->value;
+    }
+
+    // Get cargo.
+    if ($user->hasField('field_cargo') && !$user->get('field_cargo')->isEmpty()) {
+      $variables['current_user_cargo'] = $user->get('field_cargo')->value;
     }
 
     // Create full name from custom fields.
@@ -117,6 +122,65 @@ function intranet_megamidia_preprocess_page(&$variables) {
     }
   }
   $variables['current_user_role'] = !empty($role_labels) ? implode(', ', $role_labels) : 'Colaborador';
+
+  // Check if user is content editor.
+  $variables['is_content_editor'] = $current_user->hasRole('content_editor');
+  
+  // Add theme directory path for templates (especially auth pages where it might not be set).
+  if (!isset($variables['directory'])) {
+    $variables['directory'] = \Drupal::theme()->getActiveTheme()->getPath();
+  }
+  
+  // Get node type label for node add pages.
+  try {
+    $current_path = \Drupal::service('path.current')->getPath();
+    if (preg_match('#^/node/add/([^/]+)#', $current_path, $matches)) {
+      $node_type = $matches[1];
+      if ($node_type) {
+        $node_type_entity = \Drupal::entityTypeManager()->getStorage('node_type')->load($node_type);
+        if ($node_type_entity) {
+          $variables['node_type_label'] = $node_type_entity->label();
+        }
+      }
+    }
+  }
+  catch (\Exception $e) {
+    // Silently fail if there's an error, use default.
+  }
+  
+  // Get node entity for node edit pages.
+  try {
+    $route_match = \Drupal::routeMatch();
+    if ($route_match) {
+      $node = $route_match->getParameter('node');
+      if ($node && $node instanceof \Drupal\node\NodeInterface) {
+        $variables['node'] = $node;
+        // Get node type label.
+        $node_type_entity = \Drupal::entityTypeManager()->getStorage('node_type')->load($node->bundle());
+        if ($node_type_entity) {
+          $variables['node_type_label'] = $node_type_entity->label();
+        }
+        // Format creation date.
+        $date_formatter = \Drupal::service('date.formatter');
+        $variables['node_created_formatted'] = $date_formatter->format($node->getCreatedTime(), 'short');
+        // Get node ID.
+        $variables['node_id'] = $node->id();
+      }
+    }
+  }
+  catch (\Exception $e) {
+    // Silently fail if there's an error.
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views templates.
+ */
+function intranet_megamidia_preprocess_views_view(&$variables) {
+  $current_user = \Drupal::currentUser();
+  
+  // Check if user has permission to edit content (administrator or content_editor).
+  $variables['can_edit_content'] = $current_user->hasRole('administrator') || $current_user->hasRole('content_editor');
 }
 
 /**

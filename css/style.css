@@ -36,31 +36,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Remove Drupal admin toolbar offset when in theme */
-body.toolbar-fixed {
-    padding-top: 0 !important;
-}
-
 #toolbar-administration {
     display: none !important;
 }
-/*
-div[role="alert"] {
-    padding: 15px 20px;
-    border-radius: 15px;
-    background-color: #f0f9ff;
-    background: #f6890b;
-    font-size: 16px;
-    font-weight: normal;
-    margin-bottom: 15px;
-    color: #fff;
-}
 
-div[role="alert"] a {
-    font-weight: bold;
-    text-decoration: underline;
-    color: #fff;
-}*/
 
 /* ==========================================================================
    LAYOUT
@@ -72,6 +51,7 @@ div[role="alert"] a {
     background-color: #f9fafb;
     /* gray-50 */
     overflow: hidden;
+    margin: 0;
 }
 
 .layout-main-wrapper {
@@ -105,7 +85,7 @@ div[role="alert"] a {
    FORMULÁRIOS
    ========================================================================== */
 
-   form .form-item {
+form .form-item {
     margin-bottom: 0;
 }
 
@@ -119,7 +99,10 @@ form .form-item label {
 
 form .form-item input[type="text"],
 form .form-item input[type="password"],
-form .form-item input[type="email"] {
+form .form-item input[type="email"],
+form .form-item select,
+form .form-item textarea,
+form .field--type-file {
     display: block;
     width: 100%;
     padding: 0.75rem 1rem;
@@ -129,6 +112,10 @@ form .form-item input[type="email"] {
     color: #111827;
     background-color: #ffffff;
     transition: border-color 150ms, box-shadow 150ms;
+}
+
+form .field--type-file{
+    margin: 20px 0;
 }
 
 form .form-item input[type="text"]:focus,
@@ -274,6 +261,10 @@ form .form-item-persistent-login label {
     color: #d97706;
 }
 
+[data-drupal-messages] [role="contentinfo"] {
+    text-align: center;
+}
+
 
 /* ==========================================================================
    SIDEBAR
@@ -343,7 +334,7 @@ form .form-item-persistent-login label {
 }
 
 .sidebar__nav {
-    flex: 1;
+    /*flex: 1;*/
     padding: 1.5rem 1rem;
 }
 
@@ -381,6 +372,10 @@ form .form-item-persistent-login label {
 .sidebar__user {
     padding: 1rem;
     border-top: 1px solid #f3f4f6;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .sidebar__user-inner {
@@ -925,35 +920,36 @@ form .form-item-persistent-login label {
    TABLES
    ========================================================================== */
 
-.data-table {
+table {
     width: 100%;
     text-align: left;
     font-size: 0.875rem;
     color: #4b5563;
 }
 
-.data-table thead {
+table thead {
     background-color: #f9fafb;
     color: #111827;
     font-weight: 600;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.data-table th,
-.data-table td {
+table th,
+table td {
     padding: 1rem 1.5rem;
 }
 
-.data-table tbody tr {
+table tbody tr {
     border-bottom: 1px solid #f3f4f6;
     transition: background-color 150ms;
+    background: #fff;
 }
 
-.data-table tbody tr:hover {
+table tbody tr:hover {
     background-color: #f9fafb;
 }
 
-.data-table tbody tr:last-child {
+table tbody tr:last-child {
     border-bottom: none;
 }
 
@@ -1209,21 +1205,16 @@ form .form-item-persistent-login label {
     }
 }
 
-/* Auth Form Styles */
-/*form {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #f3f4f6;
+
+
+/* ==========================================================================
+    LOGIN  
+   ========================================================================== */
+
+.page-auth .auth-page__branding{
+    background: #00417f url(assets/hero-tech.jpg) center no-repeat;
+    background-size: cover;
 }
-
-.auth-form-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}*/
-
 
 /* Hide some Drupal elements on auth forms */
 .page-auth .toolbar-menu-administration,
@@ -1245,7 +1236,9 @@ form .block-user-login-block {
 
 /* Hide user picture and contact fields on registration page only */
 .user-register-form #edit-user-picture-wrapper,
-.user-register-form #edit-contact {
+.user-register-form #edit-contact,
+.user-register-form #edit-field-cargo-wrapper,
+.user-register-form #edit-field-telefone-wrapper {
     display: none !important;
 }
 
@@ -1285,4 +1278,93 @@ form .block-user-login-block {
     max-width: 200px;    
     max-height: 45px;
     align-self: center;
+}
+
+
+/* ==========================================================================
+    ADD NODE PAGE  
+   ========================================================================== */
+.add-node-page.layout-container {
+    margin: 0 !important;
+}
+
+.add-node-page .vertical-tabs .vertical-tabs__panes{
+    padding: 25px;
+}
+
+.add-node-page .form .form-item{
+    margin-bottom: 15px;
+}
+
+
+/* ==========================================================================
+    ADD NODE PAGE  
+   ========================================================================== */
+.edit-node-page.layout-container {
+    margin: 0 !important;
+}
+
+.edit-node-page .vertical-tabs .vertical-tabs__panes{
+    padding: 25px;
+}
+
+.edit-node-page .form .form-item{
+    margin-bottom: 15px;
+}
+
+
+/* ==========================================================================
+    ADMIN CONTENT PAGE
+   ========================================================================== */
+#block-intranet-megamidia-content .views-exposed-form{
+    display: flex;      
+    gap: 20px;
+    align-items: end;
+}
+#block-intranet-megamidia-content #edit-header,
+#block-intranet-megamidia-content .views-field-node-bulk-form,
+#block-intranet-megamidia-content #edit-actions--2{
+    display: none;
+}
+
+#block-intranet-megamidia-content .dropbutton-widget .dropbutton{
+    display: flex;
+    gap: 10px;
+}
+
+#block-intranet-megamidia-content .views-field.views-field-title a{
+    font-weight: 600;
+}
+#block-intranet-megamidia-content .dropbutton-toggle{
+ display: none;
+}
+
+#block-intranet-megamidia-content .dropbutton-action{
+    display: block;
+    width: 100%;    
+    background-color: #0284c7;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 150ms;
+    padding: 0;    
+    padding: 5px 10px 5px 10px;    
+    font-size: 13px;    
+}
+
+#block-intranet-megamidia-content .dropbutton-action.secondary-action{
+    background-color: #c70202;
+    color: #fff;
+    border: 1px solid #c70202;
+}
+
+a#edit-delete{
+    background-color: #c70202;
+    color: #fff;
+    border: 1px solid #c70202;
+    display: inline-block;
+    padding: 10px 20px;
 }

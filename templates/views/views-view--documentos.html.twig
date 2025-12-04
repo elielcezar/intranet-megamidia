@@ -109,11 +109,18 @@
                 
                 {# Action #}
                 <td class="px-6 py-4 text-right">
-                  {% if file %}
-                    <a href="{{ file_url(file.uri.value) }}" download class="text-brand-600 hover:text-brand-800 font-medium text-xs uppercase tracking-wide">
-                      {{ 'Baixar'|t }}
-                    </a>
-                  {% endif %}
+                  <div class="flex items-center justify-end gap-3">
+                    {% if file %}
+                      <a href="{{ file_url(file.uri.value) }}" download class="text-brand-600 hover:text-brand-800 font-medium text-xs uppercase tracking-wide">
+                        {{ 'Baixar'|t }}
+                      </a>
+                    {% endif %}
+                    {% if can_edit_content %}
+                      <a href="{{ path('entity.node.edit_form', {'node': node.id}) }}" class="text-gray-600 hover:text-gray-900 font-medium text-xs uppercase tracking-wide">
+                        {{ 'Editar'|t }}
+                      </a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
             {% endfor %}
